@@ -28,6 +28,7 @@ library
       BFS
       Data
       Lib
+      ReArrange
   other-modules:
       Paths_invertible_lang
   autogen-modules:
