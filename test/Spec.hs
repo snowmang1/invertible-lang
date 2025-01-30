@@ -3,12 +3,13 @@ import Test.Tasty.HUnit
 
 import Data
 import BFS
+import ReArrange
 
 main :: IO()
 main = defaultMain allTests
 
 allTests :: TestTree
-allTests =  testGroup "Tests" [mainTests, bfsTests]
+allTests =  testGroup "Tests" [mainTests, bfsTests, inversionTests]
 
 mainTests :: TestTree
 mainTests = testGroup "Main"
@@ -113,4 +114,37 @@ searchTests = testGroup "BFS Search Tests"
     bfs_search depth2 @?= searched_depth2,
   testCase "depth=3" $
     bfs_search depth3 @?= searched_depth3
+  ]
+
+arith1 :: BFSTree
+arith1 = BFS_Delta (Sub, "W", 0, Add) [ BFS_Leaf (Add, "W", 0, Add),
+                                          BFS_Leaf (Add, "W", 0, Add)]
+
+arith2 :: BFSTree
+arith2 = BFS_Delta (Sub, "W", 0, Add) [ BFS_Delta (Add, "W", 0, Add) [
+                                          BFS_Leaf (Sub, "W", 0, Sub)],
+                                        BFS_Delta (Add, "W", 0, Add) [
+                                          BFS_Leaf (Sub, "W", 0, Sub)]]
+
+inv_arith1 :: BFSTree
+inv_arith1 = BFS_Delta (Add, "W", 0, Add) [ BFS_Leaf (Sub, "W", 0, Add),
+                                              BFS_Leaf (Sub, "W", 0, Add)]
+
+inv_arith2 :: BFSTree
+inv_arith2 = BFS_Delta (Add, "W", 0, Add) [ BFS_Delta (Sub, "W", 0, Add) [
+                                              BFS_Leaf (Add, "W", 0, Sub)],
+                                            BFS_Delta (Sub, "W", 0, Add) [
+                                              BFS_Leaf (Add, "W", 0, Sub)]]
+
+inversionTests :: TestTree
+inversionTests = testGroup "Inversion Testing"
+  [
+  testCase "Arithmetic Inversion of single node" $
+    invertBFSTree (BFS_Delta (Add, "W", 0, Add) []) @?= BFS_Delta (Sub, "W", 0, Add) [],
+  testCase "Arithmetic Inversion of leaf node" $
+    invertBFSTree (BFS_Leaf (Sub, "W", 0, Add)) @?= BFS_Leaf (Add, "W", 0, Add),
+  testCase "Arithmetic Inversion of Delta level=1" $
+    invertBFSTree arith1 @?= inv_arith1,
+  testCase "Arithmetic Inversion of Delta level=2" $
+    invertBFSTree arith2 @?= inv_arith2
   ]

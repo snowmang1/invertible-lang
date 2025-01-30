@@ -1,4 +1,4 @@
-module BFS ( module BFS ) where
+module BFS ( BFSTreeNode, BFSTree (..), ast_to_bfs, bfs_search ) where
 
 import Data
 
@@ -32,7 +32,7 @@ ast_to_bfs (AST_Delta op l) = start_ast_parse (BFS_Delta (op, "B", 0, op) []) (A
     -- should there exist a BFS_Leaf the transformation has failed
   start_ast_parse _ _ = undefined
 
--- | BFS algorithm impl special, beginning with 
+-- | BFS algorithm impl specialized for BFSTree structure from CLRS book
 bfs_search :: BFSTree -> BFSTree
 bfs_search BFS_Nil = BFS_Nil
   -- This case is trivial and does not require BFS
